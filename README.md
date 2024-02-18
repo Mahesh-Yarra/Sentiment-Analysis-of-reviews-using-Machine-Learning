@@ -1,19 +1,19 @@
 # Sentiment-Analysis-of-reviews-using-Machine-Learning
 
 Multinomial Naive Bayes Cross-Validation Scores:
-[0.768      0.797      0.787      0.799      0.78378378]
-Mean Accuracy: 0.7869567567567567
+[0.751      0.751      0.765      0.73373373 0.76676677]
+Mean Accuracy: 0.7535001001001002
 
 k-Nearest Neighbors Cross-Validation Scores:
-[0.692      0.684      0.694      0.739      0.68668669]
-Mean Accuracy: 0.6991373373373373
+[0.701      0.691      0.697      0.7027027  0.69469469]
+Mean Accuracy: 0.6972794794794794
 
 SVM Cross-validation scores: 
-[0.863      0.865      0.887      0.871      0.85285285]
+[0.893      0.874      0.895      0.87087087 0.87087087]
 Logistic Regression Cross-validation scores: 
-[0.85       0.845      0.852      0.849      0.83283283]
+[0.857      0.825      0.834      0.82582583 0.82282282]
 
-
-SVM Mean Accuracy: 0.8677705705705707
-SVM Standard Deviation of Accuracy: 0.011253202898569698
-Logistic Regression Mean Accuracy: 0.8457665665665666
+SVM Mean Accuracy: 0.8807483483483484
+SVM Standard Deviation of Accuracy: 0.010898457423509526
+Logistic Regression Mean Accuracy: 0.8329297297297298
+Logistic Regression Standard Deviation of Accuracy: 0.012617598985723264
