@@ -5,5 +5,9 @@ langdetect
 transformers
 tensorflow
 torch
+<<<<<<< HEAD
 scikit-learn
 nltk
+=======
+tensorflow_text
+>>>>>>> ab7a99c6352d5172d34c7487a62f95bc0faa417e
