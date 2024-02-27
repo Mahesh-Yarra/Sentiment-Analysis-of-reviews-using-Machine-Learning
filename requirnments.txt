@@ -4,3 +4,7 @@ scikit-learn
 nltk
 bs4
 langdetect
+transformers
+tensorflow
+torch
+tensorflow_text
