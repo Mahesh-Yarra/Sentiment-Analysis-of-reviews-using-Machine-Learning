@@ -1,0 +1,9 @@
+pandas
+numpy
+bs4
+langdetect
+transformers
+tensorflow
+torch
+scikit-learn
+nltk
