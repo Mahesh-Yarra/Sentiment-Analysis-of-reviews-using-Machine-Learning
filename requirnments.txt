@@ -4,3 +4,5 @@ scikit-learn
 nltk
 bs4
 langdetect
+dask
+distributed
