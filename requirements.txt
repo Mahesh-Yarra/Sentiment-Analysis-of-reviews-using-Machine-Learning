@@ -5,3 +5,6 @@ nltk
 bs4
 langdetect
 tensorflow
+re
+string
+contractions
