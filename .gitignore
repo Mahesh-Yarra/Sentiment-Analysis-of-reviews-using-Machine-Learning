@@ -1,2 +1,14 @@
 /csv
 /Dataset
+Connotations/connotations-Copy1.csv
+Connotations/negative-words-Copy1.txt
+Connotations/positive-words-Copy1.txt
+Dataset/
+KP RUn/
+corr_2k_features.csv
+corr_5k_features.csv
+csv/
+src/glove.twitter.27B.zipnaf933jv.tmp
+tcorr_2k_features.csv
+tfidf_df_13k_features.csv
+untitled.m
