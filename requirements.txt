@@ -5,3 +5,5 @@ nltk
 bs4
 langdetect
 tensorflow
+seaborn
+matplotlib
