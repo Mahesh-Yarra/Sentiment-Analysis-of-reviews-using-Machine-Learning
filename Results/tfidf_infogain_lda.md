@@ -52,6 +52,8 @@ Classification Report for Neural Network:
 
 
 
+
+
 # tfidf_info_gain_5k + lda_150_topics
 
 Classification Report for Multinomial Naive Bayes:
@@ -103,6 +105,8 @@ Classification Report for Neural Network:
         accuracy                           0.72      1000
        macro avg       0.72      0.72      0.72      1000
     weighted avg       0.72      0.72      0.72      1000
+
+
 
 
 
