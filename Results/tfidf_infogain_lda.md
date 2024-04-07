@@ -104,7 +104,15 @@ Classification Report for KNN:
    macro avg       0.58      0.58      0.57      4997
 weighted avg       0.58      0.58      0.57      4997
 
+Classification Report for Neural Network:
+              precision    recall  f1-score   support
 
+           0       0.71      0.66      0.69       498
+           1       0.69      0.74      0.71       502
+
+    accuracy                           0.70      1000
+   macro avg       0.70      0.70      0.70      1000
+weighted avg       0.70      0.70      0.70      1000
 
 
 
