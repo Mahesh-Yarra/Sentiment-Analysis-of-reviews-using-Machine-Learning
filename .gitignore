@@ -1,2 +1,6 @@
 Datasets/*.csv
 Datasets/*.txt
+src/row_images
+Datasets*
+Dataset
+csv
