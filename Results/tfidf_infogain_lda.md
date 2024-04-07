@@ -10,8 +10,6 @@ Classification Report for Multinomial Naive Bayes:
    macro avg       0.75      0.75      0.75      4997
 weighted avg       0.75      0.75      0.75      4997
 
-
-
 Classification Report for SVM:
               precision    recall  f1-score   support
 
@@ -21,8 +19,6 @@ Classification Report for SVM:
     accuracy                           0.75      4997
    macro avg       0.76      0.75      0.75      4997
 weighted avg       0.76      0.75      0.75      4997
-
-
 
 Classification Report for Logistic Regression:
               precision    recall  f1-score   support
@@ -44,7 +40,6 @@ Classification Report for KNN:
    macro avg       0.57      0.57      0.57      4997
 weighted avg       0.57      0.57      0.57      4997
 
-
 Classification Report for Neural Network:
               precision    recall  f1-score   support
 
@@ -54,6 +49,62 @@ Classification Report for Neural Network:
     accuracy                           0.69      1000
    macro avg       0.70      0.69      0.69      1000
 weighted avg       0.70      0.69      0.69      1000
+
+
+
+# tfidf_info_gain_5k + lda_150_topics
+
+Classification Report for Multinomial Naive Bayes:
+              precision    recall  f1-score   support
+
+           0       0.78      0.80      0.79      2479
+           1       0.80      0.78      0.79      2518
+
+    accuracy                           0.79      4997
+   macro avg       0.79      0.79      0.79      4997
+weighted avg       0.79      0.79      0.79      4997
+
+Classification Report for SVM:
+              precision    recall  f1-score   support
+
+           0       0.83      0.71      0.77      2479
+           1       0.75      0.86      0.80      2518
+
+    accuracy                           0.79      4997
+   macro avg       0.79      0.79      0.79      4997
+weighted avg       0.79      0.79      0.79      4997
+
+Classification Report for Logistic Regression:
+              precision    recall  f1-score   support
+
+           0       0.82      0.73      0.77      2479
+           1       0.76      0.84      0.80      2518
+
+    accuracy                           0.78      4997
+   macro avg       0.79      0.78      0.78      4997
+weighted avg       0.79      0.78      0.78      4997
+
+Classification Report for KNN:
+              precision    recall  f1-score   support
+
+           0       0.59      0.41      0.49      2479
+           1       0.56      0.72      0.63      2518
+
+    accuracy                           0.57      4997
+   macro avg       0.57      0.57      0.56      4997
+weighted avg       0.57      0.57      0.56      4997
+
+Classification Report for Neural Network:
+              precision    recall  f1-score   support
+
+           0       0.73      0.67      0.70       498
+           1       0.70      0.76      0.73       502
+
+    accuracy                           0.72      1000
+   macro avg       0.72      0.72      0.72      1000
+weighted avg       0.72      0.72      0.72      1000
+
+
 
 
 # tfidf_info_gain_8k + lda_150_topics
@@ -68,8 +119,6 @@ Classification Report for Multinomial Naive Bayes:
    macro avg       0.80      0.80      0.80      4997
 weighted avg       0.80      0.80      0.80      4997
 
-
-
 Classification Report for SVM:
               precision    recall  f1-score   support
 
@@ -80,8 +129,6 @@ Classification Report for SVM:
    macro avg       0.80      0.80      0.80      4997
 weighted avg       0.80      0.80      0.80      4997
 
-
-
 Classification Report for Logistic Regression:
               precision    recall  f1-score   support
 
@@ -91,8 +138,6 @@ Classification Report for Logistic Regression:
     accuracy                           0.80      4997
    macro avg       0.80      0.80      0.80      4997
 weighted avg       0.80      0.80      0.80      4997
-
-
 
 Classification Report for KNN:
               precision    recall  f1-score   support
