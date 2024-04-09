@@ -1,6 +1,3 @@
-Datasets/*.csv
-Datasets/*.txt
-src/row_images
-Datasets*
-Dataset
-csv
+Backend/__pycache__
+/node_modules
+Backend/Models
