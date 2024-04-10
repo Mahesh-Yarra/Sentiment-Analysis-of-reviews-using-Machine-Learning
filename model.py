@@ -2,6 +2,7 @@ import pandas as pd
 import zipfile
 from feature_engineering import extract_features
 from neural_network import train_neural_network
+from preprocessing import preprocess
 
 # Specify the path to the ZIP file
 zip_file_path = r"./Datasets/imdb-dataset-of-50k-movie-reviews.zip"
@@ -21,6 +22,13 @@ df_subset = df.sample(n=5000, random_state=42).reset_index(drop=True)
 df_subset['sentiment'] = df_subset['sentiment'].map({'positive': 1, 'negative': 0})
 
 print(df_subset)
+
+# Preprocess the 'review' column
+df_subset['review'] = df_subset['review'].apply(preprocess)
+
+# Drop rows with None values (non-English text or failed preprocessing)
+df_subset.dropna(inplace=True)
+df_subset.reset_index(drop=True, inplace=True)
 
 # Extract features
 selected_features = extract_features(df_subset)
