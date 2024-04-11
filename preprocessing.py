@@ -40,13 +40,6 @@ def preprocess(text):
     # Remove extra whitespaces
     text = re.sub(r'\s+', ' ', text).strip()
 
-    # Filter non-English text
-    try:
-        if detect(text) != 'en':
-            return None
-    except:
-        return None
-
     # Lemmatization
     lemmatizer = WordNetLemmatizer()
 
