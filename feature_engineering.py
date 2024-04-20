@@ -1,12 +1,13 @@
+import os
+import pickle
+
+import nltk
+import pandas as pd
 from nltk.sentiment import SentimentIntensityAnalyzer
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer, TfidfTransformer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import MinMaxScaler
-import pandas as pd
-import nltk
-import os
-import pickle
 
 nltk.download('wordnet')
 nltk.download('punkt')
@@ -27,6 +28,7 @@ LEXICON_CONNOTATION = r"./Datasets/connotations.csv"
 
 def extract_features(df_subset):
     reviews = df_subset['review']
+
     # Initialize the TfidfVectorizer
     tfidf_vectorizer = TfidfVectorizer()
     tfidf_features = tfidf_vectorizer.fit_transform(reviews)
@@ -39,17 +41,10 @@ def extract_features(df_subset):
     # Calculate correlation between each feature in X and the target variable in y
     correlation = tfidf_features_df.corrwith(df_subset['sentiment'])
 
-    # Sort the correlation values and get the indices of the top correlated features
-    selected_features_8000 = correlation.abs().nlargest(8000).index
-
-    # Filter the features dataframe with selected features
-    selected_df_8000 = tfidf_features_df[selected_features_8000]
-
     # Create a new TfidfVectorizer with the vocabulary limited to the top 8,000 most relevant features
-    new_tfidf_vectorizer = TfidfVectorizer(vocabulary=selected_features_8000)
+    new_tfidf_vectorizer = TfidfVectorizer(vocabulary=correlation.abs().nlargest(8000).index)
     new_tfidf_df = new_tfidf_vectorizer.fit_transform(reviews)
     new_tfidf_df = pd.DataFrame(new_tfidf_df.toarray(), columns=new_tfidf_vectorizer.get_feature_names_out())
-    print(new_tfidf_df)
 
     # Appending connotation features
     connotations = pd.read_csv(LEXICON_CONNOTATION)
@@ -103,7 +98,7 @@ def extract_features(df_subset):
 
     # Pickle TfidfVectorizer
     with open(os.path.join(MODELS_DIR, 'tfidf_vectorizer.pkl'), 'wb') as f:
-        pickle.dump(tfidf_vectorizer, f)
+        pickle.dump(new_tfidf_vectorizer, f)
 
     # Pickle LDA pipeline
     with open(os.path.join(MODELS_DIR, 'lda_topics_extractor.pkl'), 'wb') as f:

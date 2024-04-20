@@ -1,5 +1,7 @@
-import pandas as pd
 import zipfile
+
+import pandas as pd
+
 from feature_engineering import extract_features
 from neural_network import train_neural_network
 from preprocessing import preprocess
@@ -21,22 +23,13 @@ df_subset = df.sample(n=5000, random_state=42).reset_index(drop=True)
 # Map the sentiment values to 1 for positive and 0 for negative
 df_subset['sentiment'] = df_subset['sentiment'].map({'positive': 1, 'negative': 0})
 
-print(df_subset)
-
 # Preprocess the 'review' column
 df_subset['review'] = df_subset['review'].apply(preprocess)
-
-# Drop rows with None values (non-English text or failed preprocessing)
-df_subset.dropna(inplace=True)
-df_subset.reset_index(drop=True, inplace=True)
 
 # Extract features
 selected_features = extract_features(df_subset)
 
-print(selected_features)
-
 # Classification
-
 # Call the train_neural_network function and print the classification report
 classification_report = train_neural_network(selected_features, df_subset['sentiment'])
 print(classification_report)

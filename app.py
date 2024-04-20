@@ -1,11 +1,11 @@
+import pickle
+import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import joblib
-import pandas as pd
 from nltk.sentiment import SentimentIntensityAnalyzer
-from feature_engineering import update_counts, update_word_counts, vader_sentiment, normalize_features, scale_features
 from tensorflow.keras.models import load_model
 
+from feature_engineering import update_counts, update_word_counts, vader_sentiment, normalize_features, scale_features
 from preprocessing import preprocess
 
 app = Flask(__name__)
@@ -19,12 +19,19 @@ LEXICON_NEGATIVE = r"./Datasets/negative-words.txt"
 LEXICON_CONNOTATION = r"./Datasets/connotations.csv"
 
 # Load the trained model and necessary preprocessing steps
+with open('./Models/tfidf_vectorizer.pkl', 'rb') as file:
+    vectorizer = pickle.load(file)
+
+with open('./Models/lda_topics_extractor.pkl', 'rb') as file:
+    lda_pipeline = pickle.load(file)
+
+# Load the scaler
+with open('./Models/scaler.pkl', "rb") as file:
+    scaler = pickle.load(file)
+
 # Load the saved model
 model = load_model('./Models/sentiment_model.h5')
-vectorizer = joblib.load('./Models/tfidf_vectorizer.pkl')
-selector = joblib.load('./Models/correlated_feature_picker.pkl')
-lda_pipeline = joblib.load('./Models/lda_topics_extractor.pkl')
-
+num_topics = 250
 connotations = pd.read_csv(LEXICON_CONNOTATION)
 word_emotion_map = dict(zip(connotations['word'], connotations['emotion']))
 
@@ -42,8 +49,6 @@ def predict():
     input_text = data.get('text', '')
 
     # Preprocess input text
-    print(input_text)
-
     preprocessed_text = preprocess(input_text)
 
     # Vectorize preprocessed text
@@ -52,26 +57,27 @@ def predict():
 
     # Transform text using LDA pipeline
     lda_features = lda_pipeline.transform([preprocessed_text])
+
     # Convert the array into a DataFrame
-    lda_features_df = pd.DataFrame(lda_features)
+    lda_features_df = pd.DataFrame(lda_features,  columns=[f"Topic_{i}" for i in range(1, num_topics + 1)])
 
     # Extract additional features
-    pos_neg_conn_counts_df = pd.DataFrame([update_counts(input_text, word_emotion_map)],
+    pos_neg_conn_counts_df = pd.DataFrame([update_counts(preprocessed_text, word_emotion_map)],
                                           columns=['Positive_Connotation_Count', 'Negative_Connotation_Count'])
 
     # Appending positive and negative word's count
-    pos_neg_counts_df = pd.DataFrame([update_word_counts(input_text, positive_words, negative_words)],
+    pos_neg_counts_df = pd.DataFrame([update_word_counts(preprocessed_text, positive_words, negative_words)],
                                      columns=['Positive_Word_Count', 'Negative_Word_Count'])
 
     # Appending VADER features
     # Use VADER for sentiment analysis
     sid = SentimentIntensityAnalyzer()
-    vader_scores_df = pd.DataFrame([vader_sentiment(input_text, sid)],
+    vader_scores_df = pd.DataFrame([vader_sentiment(preprocessed_text, sid)],
                                    columns=['Positive_VADER_Count', 'Negative_VADER_Count'])
 
     # Concatenate features
     selected_features = pd.concat(
-        [vectorized_text_df, lda_features_df, pos_neg_conn_counts_df, pos_neg_counts_df, vader_scores_df], axis=1)
+        [vectorized_text_df, pos_neg_conn_counts_df, pos_neg_counts_df, vader_scores_df, lda_features_df], axis=1)
 
     # Normalize features
     columns_to_normalize = ['Positive_Connotation_Count', 'Negative_Connotation_Count',
@@ -81,10 +87,11 @@ def predict():
 
     # Scale features
     X.columns = X.columns.astype(str)  # Convert feature names to strings
-    X_scaled = scale_features(X)
+    X_scaled = scaler.transform(X)
 
     # Predict sentiment
     prediction = model.predict(X_scaled)[0]
+    print(prediction)
 
     # Map predictions to sentiment labels
     sentiment_label = "Positive" if prediction[0] > 0.5 else "Negative"

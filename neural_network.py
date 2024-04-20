@@ -1,9 +1,12 @@
 import os
+import pickle
+
+import pandas as pd
+from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, classification_report
-from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import Sequential
 
 # Specify the directory to save the models
 MODELS_DIR = "./Models/"
@@ -36,11 +39,12 @@ def train_neural_network(selected_features, y):
 
     print("Neural Network Accuracy on Test Set:", accuracy)
 
-    # Evaluate the model on the test set and make predictions
-    y_pred = (model.predict(X_test_scaled) > 0.5).astype("int32")
-
     # Save the trained model in HDF5 format
     model.save(os.path.join(MODELS_DIR, 'sentiment_model.h5'))
+
+    # Save the scaler
+    with open(os.path.join(MODELS_DIR, 'scaler.pkl'), "wb") as file:
+        pickle.dump(scaler, file)
 
     # Return the classification report
     return classification_report(y_test, y_pred)
