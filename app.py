@@ -86,8 +86,11 @@ def predict():
     # Predict sentiment
     prediction = model.predict(X_scaled)[0]
 
-    # Return prediction result
-    return jsonify({'sentiment': prediction})
+    # Map predictions to sentiment labels
+    sentiment_label = "Positive" if prediction[0] > 0.5 else "Negative"
+    print(sentiment_label)
+
+    return jsonify({'sentiment': sentiment_label})
 
 
 if __name__ == '__main__':

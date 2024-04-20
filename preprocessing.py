@@ -1,12 +1,13 @@
 import re
 import string
-from bs4 import BeautifulSoup
+
 import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
+from bs4 import BeautifulSoup
 from langdetect import detect
+from nltk.corpus import stopwords
 from nltk.corpus import wordnet
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
 
 nltk.download('wordnet')
 nltk.download('punkt')
@@ -14,6 +15,10 @@ nltk.download('stopwords')
 
 
 def preprocess(text):
+
+    # Remove HTML tags
+    text = BeautifulSoup(text, 'html.parser').get_text()
+
     # Lowercase the text
     text = text.lower()
 
@@ -30,9 +35,6 @@ def preprocess(text):
 
     # Remove URLs
     text = re.sub(r'https?://\S+|www\.\S+', '', text)
-
-    # Remove HTML tags
-    text = BeautifulSoup(text, 'html.parser').get_text()
 
     # Remove non-alphanumeric characters
     text = re.sub(r'[^a-zA-Z\s]', '', text)

@@ -45,6 +45,12 @@ def extract_features(df_subset):
     # Filter the features dataframe with selected features
     selected_df_8000 = tfidf_features_df[selected_features_8000]
 
+    # Create a new TfidfVectorizer with the vocabulary limited to the top 8,000 most relevant features
+    new_tfidf_vectorizer = TfidfVectorizer(vocabulary=selected_features_8000)
+    new_tfidf_df = new_tfidf_vectorizer.fit_transform(reviews)
+    new_tfidf_df = pd.DataFrame(new_tfidf_df.toarray(), columns=new_tfidf_vectorizer.get_feature_names_out())
+    print(new_tfidf_df)
+
     # Appending connotation features
     connotations = pd.read_csv(LEXICON_CONNOTATION)
     word_emotion_map = dict(zip(connotations['word'], connotations['emotion']))
@@ -87,7 +93,7 @@ def extract_features(df_subset):
 
     # Concatenate all features into a single DataFrame
     selected_features = pd.concat(
-        [selected_df_8000, pos_neg_conn_counts_df, pos_neg_counts_df, vader_scores_df, x_lda], axis=1)
+        [new_tfidf_df, pos_neg_conn_counts_df, pos_neg_counts_df, vader_scores_df, x_lda], axis=1)
 
     # Normalize features
     columns_to_normalize = ['Positive_Connotation_Count', 'Negative_Connotation_Count',
@@ -98,10 +104,6 @@ def extract_features(df_subset):
     # Pickle TfidfVectorizer
     with open(os.path.join(MODELS_DIR, 'tfidf_vectorizer.pkl'), 'wb') as f:
         pickle.dump(tfidf_vectorizer, f)
-
-    # Pickle the correlation_feature_selector
-    with open(os.path.join(MODELS_DIR, 'correlated_feature_picker.pkl'), 'wb') as f:
-        pickle.dump(correlation, f)
 
     # Pickle LDA pipeline
     with open(os.path.join(MODELS_DIR, 'lda_topics_extractor.pkl'), 'wb') as f:
