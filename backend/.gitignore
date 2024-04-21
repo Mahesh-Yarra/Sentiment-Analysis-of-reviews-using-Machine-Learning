@@ -1,0 +1,5 @@
+.idea/
+Datasets/*csv
+Datasets/*txt
+__pycache__/
+backend/Models/*

@@ -1,4 +1,3 @@
-.idea/
-Datasets/*csv
-Datasets/*txt
-__pycache__/
+login_registerBackend/node_modules
+../backend/Models/*
+backend/Models

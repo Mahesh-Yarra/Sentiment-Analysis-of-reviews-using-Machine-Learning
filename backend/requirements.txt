@@ -79,3 +79,6 @@ Werkzeug==3.0.2
 wrapt==1.16.0
 zope.event==5.0
 zope.interface==6.2
+Flask-SQLAlchemy==3.1.1
+psycopg2==2.9.9
+SQLAlchemy==2.0.29

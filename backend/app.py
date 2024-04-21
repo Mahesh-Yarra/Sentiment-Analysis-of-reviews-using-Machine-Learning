@@ -1,14 +1,73 @@
 import pickle
+from flask_sqlalchemy import SQLAlchemy
 import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from nltk.sentiment import SentimentIntensityAnalyzer
 from tensorflow.keras.models import load_model
+import json
 
 from feature_engineering import update_counts, update_word_counts, vader_sentiment, normalize_features, scale_features
 from preprocessing import preprocess
+from services.emailService import send_email
+# from services.registerService import register_user
+from sqlalchemy.exc import IntegrityError
+from services.loginService import authenticate
+from database import db  # Import the db instance from the database package
+from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
 
 app = Flask(__name__)
+print(app)
+
+from database.models import User  # Import the User model
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:@localhost:5432/project'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+
+# Function to create database if it does not exist
+def create_db_if_not_exists():
+    engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+    if not database_exists(engine.url):
+        create_database(engine.url)
+        print("Database created successfully.")
+
+# Create the database if it does not exist
+with app.app_context():
+    create_db_if_not_exists()
+
+# Define your User model
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+
+# Function to register a new user
+def register_user(username, password):
+    if not username or not password:
+        return False
+
+    try:
+        # Create a new User object
+        new_user = User(username=username, password=password)
+
+        # Add new_user to the database session
+        db.session.add(new_user)
+
+        # Commit changes to the database
+        db.session.commit()
+
+        return True
+    except IntegrityError:
+        # Handle IntegrityError (e.g., duplicate username)
+        db.session.rollback()
+        return False
+    except Exception as e:
+        # Handle other exceptions
+        db.session.rollback()
+        print(f"Error: {e}")
+        return False
+
 CORS(app)
 
 # Paths
@@ -99,6 +158,64 @@ def predict():
 
     return jsonify({'sentiment': sentiment_label})
 
+@app.route('/email', methods=['POST'])
+def email():
+    # Get input text from request
+    data = request.json
+    print(type(data))
+    to = data.get('to', '')
+    subject = data.get('subject', '')
+    body = data.get('body', '')
+    
+    print(f"To: {to}")
+    print(f"Subject: {subject}")
+    print(f"Body: {body}")
+
+    if not to or not subject or not body:
+        return jsonify({'error': 'Incomplete email data provided'}), 400
+
+    try:
+        # Validate the recipient email address
+        if '@' not in to or '.' not in to:
+            raise ValueError('Invalid recipient email address')
+
+        # Attempt to send the email
+        send_email(to, subject, body)
+        return jsonify({'message': 'Email sent successfully'}), 200
+
+    except ValueError as ve:
+        return jsonify({'error': str(ve)}), 400  # Bad Request
+
+    except Exception as e:
+        return jsonify({'error': f'Failed to send email. Error: {str(e)}'}), 500  # Internal Server Error
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data.get('username', '')
+    password = data.get('password', '')
+
+    # Call loginService to perform authentication
+    authenticated = authenticate(username, password)
+
+    if authenticated:
+        return jsonify({'message': 'Login successful', 'username': username})
+    else:
+        return jsonify({'message': 'Login failed'}), 401  # Unauthorized
+    
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    username = data.get('username', '')
+    password = data.get('password', '')
+
+    # Call registerService to create a new user
+    success = register_user(username, password)
+
+    if success:
+        return jsonify({'message': 'Registration successful', 'username': username})
+    else:
+        return jsonify({'message': 'Registration failed'}), 400  # Bad request
 
 if __name__ == '__main__':
     app.run(debug=True)
